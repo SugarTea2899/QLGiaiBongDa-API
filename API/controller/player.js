@@ -86,5 +86,47 @@ module.exports = {
                 message: "player ID is not found"
             });
         }
+    },
+    getFreeList: async function(req, res, next){
+        try{
+            const list = await playerDB.find({teamId: null});
+            res.status(200).json(list);
+        }catch(e){
+            res.status(404).json({
+                message: e.message
+            });
+        }
+    },
+    search: async function(req, res, next){
+        try{
+            let val = req.query.name;
+            if (val === undefined)
+                val = "";
+
+            const list = await playerDB.find({name: {"$regex": val, "$options": "i"}});
+            res.status(200).json(list);
+        }catch(e){
+            res.status(404).json({
+                message: e.message
+            });
+        }
+    },
+    getInfo: async function(req, res, next){
+        try{
+            const playerId = req.query.playerId;
+            if (playerId === undefined){
+                res.status(404).json({
+                    message: "Player ID is undefined"
+                });
+                return;
+            }
+            const player = await playerDB.findById(playerId);
+            res.status(200).json(player);
+        }catch(e){
+            res.status(404).json({
+                message: "Player ID is not found"
+            });
+            return;
+        }
     }
 }
