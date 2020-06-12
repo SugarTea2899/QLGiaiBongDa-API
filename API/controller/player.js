@@ -40,5 +40,51 @@ module.exports = {
             })
         }
 
+    },
+    remove: async function(req, res, next){
+        try{
+            const playerId = req.body.playerId;
+            if (playerId === undefined){
+                res.status(404).json({
+                    message: "player Id is undefined."
+                });
+                return;
+            }
+            await playerDB.findOneAndDelete({_id: playerId});
+            res.status(404).json({
+                message: "removing player is successfull"
+            });
+        }catch(e){
+            res.status(404).json({
+                message: "player ID is not found"
+            });
+        }
+    },
+    update: async function(req, res, next){
+        try{
+            const id = req.body.playerId;
+            if (id === undefined){
+                res.status(404).json({
+                    message: "player ID is undefined"
+                });
+                return;
+            }
+            const player = await playerDB.findById(id); //catch below
+
+            for (member in req.body){
+                if (member != "playerId"){
+                    player[member] = req.body[member];
+                }
+            }
+
+            await player.save();
+            res.status(404).json({
+                message: "updating player is successfull"
+            });
+        }catch(e){
+            res.status(404).json({
+                message: "player ID is not found"
+            });
+        }
     }
 }
