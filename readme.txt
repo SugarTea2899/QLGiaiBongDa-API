@@ -1,5 +1,6 @@
 link API-DOC: https://docs.google.com/document/d/1iKZH0aoRXLMmqjteVlztF-eERXSj72roTTYOCLqeR3g
 link CSDL: https://docs.google.com/spreadsheets/d/1XVk9z2_QjM2vPjKbt-qKieaIafIEnTYbTRU9QnGNJhI
+link Danh sách chức năng: https://docs.google.com/document/d/104_ARLHFlLuPFgZ-yfhYC1TvuhLCvEbFye0JFcw88Tg/edit
 URI: mongodb+srv://admin:on4DWslQDbEnIn3Y@cluster0-rxodg.mongodb.net/FootballTournament?retryWrites=true&w=majority
 
 
