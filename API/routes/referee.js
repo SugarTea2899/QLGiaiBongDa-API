@@ -7,4 +7,9 @@ router.post('/add', async function(req, res, next){
     refereeController.add(req, res, next)
 });
 
+/* remove referee */
+router.post('/remove', async function(req, res, next){
+    refereeController.remove(req, res, next)
+});
+
 module.exports = router;

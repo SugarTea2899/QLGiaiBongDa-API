@@ -29,5 +29,26 @@ module.exports = {
                 message: e.message
             })
         }
+    },
+
+    remove: async function(req, res, next){
+        try {
+            const refereeID = req.body.refereeId;
+            if (refereeID === undefined) {
+                res.status(404).json({
+                    message: "Referee Id is undefined"
+                });
+                return;
+            }
+
+            await refereeDB.findOneAndDelete({_id: refereeID});
+            res.status(404).json({
+                message: "Removing referee is successful"
+            });
+        } catch(e) {
+            res.status(404).json({
+                message: "Referee ID not found"
+            });
+        }
     }
 }
