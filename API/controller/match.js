@@ -32,5 +32,26 @@ module.exports = {
                 message: e.message
             });
         }
-    }
+    },
+
+    remove: async function(req, res, next){
+        try {
+            const matchId = req.body.matchId;
+            if (matchId === undefined) {
+                res.status(404).json({
+                    message: "match id is undefined"
+                });
+                return;
+            }
+
+            await matchDB.findOneAndDelete({_id: matchId});
+            res.status(200).json({
+                message: "successful"
+            });
+        } catch(e) {
+            res.status(404).json({
+                message: "match id is not found"
+            });
+        }
+    }    
 }

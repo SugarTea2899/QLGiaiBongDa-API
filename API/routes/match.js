@@ -8,4 +8,9 @@ router.post('/add', async function(req, res, next){
     matchController.add(req, res, next);
 });
 
+/* remove match */
+router.post('/remove', async function(req, res, next){
+    matchController.remove(req, res, next);
+});
+
 module.exports = router;
