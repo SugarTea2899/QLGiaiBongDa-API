@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const playerController = require('../controller/player');
+const upload = require('../config/uploader');
+
 
 /* add player*/
 router.post('/add', async function(req, res, next){
@@ -30,6 +32,11 @@ router.get('/search', async function(req, res, next){
 /* get player's detail info */
 router.get('/info', async function(req, res, next){
     playerController.getInfo(req, res, next);
+});
+
+/* upload player avatar */
+router.post('/upload-avatar', upload.single('avatar'), function(req, res, next){
+    playerController.uploadAvatar(req, res, next);
 });
 
 module.exports = router;

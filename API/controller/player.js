@@ -1,4 +1,7 @@
 const playerDB = require('../models/player');
+const upload = require('../config/uploader');
+const fs = require('fs');
+
 
 module.exports = {
     add: async function(req, res, next){
@@ -7,9 +10,9 @@ module.exports = {
             playerInfo.dob = new Date(playerInfo.dob);
             const existPlayer = await playerDB.findOne({number: playerInfo.number});
 
-            if (existPlayer !== null){
+            if (existPlayer !== null && playerInfo.teamId !== null && playerInfo.teamId == existPlayer.teamId){
                 res.status(404).json({
-                    message: "Player's number is existed."
+                    message: "Player's number exist."
                 });
                 return;
             }
@@ -31,7 +34,8 @@ module.exports = {
 
             await newPlayer.save();
             res.status(200).json({
-                message: "successfull"
+                playerId: newPlayer._id,
+                message: "successful"
             });
 
         }catch(e){
@@ -51,8 +55,8 @@ module.exports = {
                 return;
             }
             await playerDB.findOneAndDelete({_id: playerId});
-            res.status(404).json({
-                message: "removing player is successfull"
+            res.status(200).json({
+                message: "removing player is successful"
             });
         }catch(e){
             res.status(404).json({
@@ -78,8 +82,8 @@ module.exports = {
             }
 
             await player.save();
-            res.status(404).json({
-                message: "updating player is successfull"
+            res.status(200).json({
+                message: "updating player is successful"
             });
         }catch(e){
             res.status(404).json({
@@ -127,6 +131,40 @@ module.exports = {
                 message: "Player ID is not found"
             });
             return;
+        }
+    },
+    uploadAvatar: async function(req, res, next){
+        if (req.file === undefined){
+            res.status(404).json({
+                message: "upload avatar failed"
+            });
+            return;
+        }
+        try{
+            const id = req.query.playerId;
+            const player = await playerDB.findById(id);
+
+            if (player.avatar !== null && player.avatar != `images/${req.file.filename}`){
+                fs.unlink(`./${player.avatar}`, (err) => {
+                    if (err)
+                        next(err);
+                });
+            }
+
+            player.avatar = `images/${req.file.filename}`;
+            await player.save();
+            res.status(200).json({
+                message: "upload avatar successful"
+            });
+        }catch(e){
+            fs.unlink(`./images/${req.file.filename}`, (err) =>{
+                if (err)
+                    next(err);
+            });
+
+            res.status(404).json({
+                message: "Player ID is not found"
+            });
         }
     }
 }
