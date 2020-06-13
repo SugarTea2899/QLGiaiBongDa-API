@@ -53,5 +53,33 @@ module.exports = {
                 message: "match id is not found"
             });
         }
-    }    
+    },
+
+    update: async function(req, res, next) {
+        try {
+            const id = req.body.matchId;
+            if (id === undefined) {
+                res.status(404).json({
+                    message: "match id is undefined"
+                });
+                return;
+            }
+
+            const match = await matchDB.findById(id);
+            for (member in req.body) {
+                if (member != "matchId") {
+                    match[member] = req.body[member];
+                }
+            }
+
+            await match.save();
+            res.status(200).json({
+                message: "updating match is successful"
+            });
+        } catch(e) {
+            res.status(404).json({
+                message: "match id is not found"
+            });
+        }
+    }
 }

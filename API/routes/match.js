@@ -13,4 +13,9 @@ router.post('/remove', async function(req, res, next){
     matchController.remove(req, res, next);
 });
 
+/* update match */
+router.post('/update', async function(req, res, next){
+    matchController.update(req, res, next);
+});
+
 module.exports = router;
