@@ -5,7 +5,7 @@ mongoose.connect(process.env.URI, {useUnifiedTopology: true, useNewUrlParser: tr
 const matchSchema = new mongoose.Schema({
     homeTeam: String,
     guestTeam: String,
-    dataStart: Date,
+    dateStart: Date,
     stadium: String,
     refereeId: String,
     round: Number

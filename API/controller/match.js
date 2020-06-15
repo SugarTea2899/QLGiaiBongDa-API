@@ -81,5 +81,21 @@ module.exports = {
                 message: "match id is not found"
             });
         }
+    },
+
+    search: async function(req, res, next) {
+        try {
+            let val = req.query.teamId;
+            if (val === undefined) {
+                val = "";
+            }
+
+            const list = await matchDB.find({$or:[{homeTeam: val},{guestTeam: val}]});
+            res.status(200).json(list);
+        } catch(e) {
+            res.status(404).json({
+                message: e.message
+            });
+        }
     }
 }

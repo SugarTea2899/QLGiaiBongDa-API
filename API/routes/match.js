@@ -18,4 +18,9 @@ router.post('/update', async function(req, res, next){
     matchController.update(req, res, next);
 });
 
+/* search match */
+router.get('/search', async function(req, res, next){
+    matchController.search(req, res, next);
+})
+
 module.exports = router;
