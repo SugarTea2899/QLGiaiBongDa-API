@@ -166,5 +166,22 @@ module.exports = {
                 message: "Player ID is not found"
             });
         }
+    },
+    getListPlayer: async function(req, res, next){
+        try {
+            const teamId = req.query.teamId;
+            if (teamId === undefined || teamId === null){
+                res.status(404).json({
+                    message: "Team ID is undefine"
+                });
+                return;
+            }
+            const list = await playerDB.find({teamId: teamId});
+            res.status(200).json(list);
+        } catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
+        }
     }
 }

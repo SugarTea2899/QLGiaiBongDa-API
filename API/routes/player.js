@@ -39,4 +39,9 @@ router.post('/upload-avatar', upload.single('avatar'), function(req, res, next){
     playerController.uploadAvatar(req, res, next);
 });
 
+/* get list player in a team */
+router.get('/teammate', async function(req, res, next){
+    playerController.getListPlayer(req, res, next);
+});
+
 module.exports = router;
