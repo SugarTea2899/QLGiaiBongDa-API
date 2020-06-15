@@ -2,14 +2,14 @@ const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-    destination: './images',
+    destination: './public/images',
     filename: (req, file, cb) => {
-        return cb(null, `${req.query.playerId}${path.extname(file.originalname)}`);
+        return cb(null, `${req.query.id}${path.extname(file.originalname)}`);
     }
 });
 
 const fileFilter = (req, file, cb) => {
-    if (req.query.playerId === undefined){
+    if (req.query.id === undefined){
         cb(null, false);
         return;
     }
