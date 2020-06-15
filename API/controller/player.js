@@ -183,5 +183,32 @@ module.exports = {
                 message: e.message
             });
         }
+    },
+    getListTopGoal: async function(req, res, next){
+        try {
+            const list = await playerDB.find().sort({totalGoal: -1});
+            const ans = [];
+            
+            if (list.length == 0){
+                res.status(200).json(ans);
+                return;
+            }
+    
+            const max = list[0].totalGoal;
+
+            for (i = 0; i < list.length; i++){
+                if (list[i].totalGoal == max){
+                    ans.push(list[i]);
+                }else{
+                    break;
+                }
+            }
+            res.status(200).json(ans); 
+        } catch (e) {
+            res.status(400).json({
+                message: e.message
+            });
+        }
+
     }
 }

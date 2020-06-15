@@ -44,4 +44,9 @@ router.get('/teammate', async function(req, res, next){
     playerController.getListPlayer(req, res, next);
 });
 
+/* get list top goal */
+router.get('/top-goal', async function(req, res, next){
+    playerController.getListTopGoal(req, res, next);
+});
+
 module.exports = router;
