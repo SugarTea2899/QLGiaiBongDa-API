@@ -209,6 +209,57 @@ module.exports = {
                 message: e.message
             });
         }
+    },
+    getListTopCleanSheet: async function(req, res, next){
+        try {
+            const list =  await playerDB.find().sort({totalCleanSheet: -1});
+            const ans = [];
 
+            if (list.length == 0){
+                res.status(200).json(ans);
+                return;
+            }
+    
+            const max = list[0].totalCleanSheet;
+
+            for (i = 0; i < list.length; i++){
+                if (list[i].totalCleanSheet == max){
+                    ans.push(list[i]);
+                }else{
+                    break;
+                }
+            }
+            res.status(200).json(ans); 
+        } catch (e) {
+            res.status(400).json({
+                message: e.message
+            });
+        }
+    },
+    getTopAssistance: async function(req, res, next){
+        try {
+            const list =  await playerDB.find().sort({totalAssist: -1});
+            const ans = [];
+
+            if (list.length == 0){
+                res.status(200).json(ans);
+                return;
+            }
+    
+            const max = list[0].totalAssist;
+
+            for (i = 0; i < list.length; i++){
+                if (list[i].totalAssist == max){
+                    ans.push(list[i]);
+                }else{
+                    break;
+                }
+            }
+            res.status(200).json(ans); 
+        } catch (e) {
+            res.status(400).json({
+                message: e.message
+            });
+        }       
     }
 }

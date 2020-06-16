@@ -49,4 +49,14 @@ router.get('/top-goal', async function(req, res, next){
     playerController.getListTopGoal(req, res, next);
 });
 
+/* get list top clean sheet */
+router.get('/top-clean-sheet', async function(req, res, next){
+    playerController.getListTopCleanSheet(req, res, next);
+});
+
+/* get top assistance list */
+router.get('/top-assistance', async function(req, res, next){
+    playerController.getTopAssistance(req, res, next);
+});
+
 module.exports = router;
