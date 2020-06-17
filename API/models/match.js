@@ -8,7 +8,13 @@ const matchSchema = new mongoose.Schema({
     dateStart: Date,
     stadium: String,
     refereeId: String,
-    round: Number
+    round: Number,
+    homeGoal: Number,
+    guestGoal: Number,
+    homeYellowCard: Number,
+    guestYellowCard: Number,
+    homeRedCard: Number,
+    guestRedCard: Number
 }, {collection: 'matches'});
 
 module.exports = mongoose.model('matches', matchSchema);

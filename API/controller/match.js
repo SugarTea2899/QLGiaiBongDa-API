@@ -20,7 +20,13 @@ module.exports = {
                 dateStart: matchInfo.dateStart,
                 stadium: matchInfo.stadium,
                 refereeId: matchInfo.refereeId,
-                round: matchInfo.round
+                round: matchInfo.round,
+                homeGoal: matchInfo.homeGoal,
+                guestGoal: matchInfo.guestGoal,
+                homeYellowCard: matchInfo.homeYellowCard,
+                guestYellowCard: matchInfo.guestYellowCard,
+                homeRedCard: matchInfo.homeRedCard,
+                guestRedCard: matchInfo.guestRedCard
             });
 
             await newMatch.save();
