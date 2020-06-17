@@ -23,4 +23,8 @@ router.get('/search', async function(req, res, next){
     matchController.search(req, res, next);
 })
 
+/* add match detail */
+router.post('/add-detail', async function(req, res, next){
+    matchController.addDetail(req, res, next);
+});
 module.exports = router;
