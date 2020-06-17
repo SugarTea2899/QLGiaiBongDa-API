@@ -141,11 +141,11 @@ module.exports = {
             return;
         }
         try{
-            const id = req.query.playerId;
+            const id = req.query.id;
             const player = await playerDB.findById(id);
 
             if (player.avatar !== null && player.avatar != `images/${req.file.filename}`){
-                fs.unlink(`./${player.avatar}`, (err) => {
+                fs.unlink(`./public/${player.avatar}`, (err) => {
                     if (err)
                         next(err);
                 });
@@ -157,7 +157,7 @@ module.exports = {
                 message: "upload avatar successful"
             });
         }catch(e){
-            fs.unlink(`./images/${req.file.filename}`, (err) =>{
+            fs.unlink(`./public/images/${req.file.filename}`, (err) =>{
                 if (err)
                     next(err);
             });
