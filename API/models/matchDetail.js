@@ -7,7 +7,9 @@ const matchDetailSchema = new mongoose.Schema({
     type: Number,
     minute: Number,
     isHomeTeam: Boolean,
-    playerId: String
+    playerId: String,
+    outId: String,
+    inId: String
 }, {collection: 'matchStatDetail'});
 
 module.exports = mongoose.model('matchStatDetail', matchDetailSchema);

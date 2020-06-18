@@ -1,6 +1,7 @@
 const matchDB = require('../models/match');
 const matchDetailDB = require('../models/matchDetail');
 const playerDB = require('../models/player');
+const match = require('../models/match');
 
 module.exports = {
     add: async function(req, res, next) {
@@ -109,7 +110,7 @@ module.exports = {
     addDetail: async function (req, res, next){
         try {
             const detail = req.body;
-            if (!(0 <= detail.type && detail.type <= 5)){
+            if (!(0 <= detail.type && detail.type <= 6)){
                 res.status(400).json({
                     message: "Type value is wrong"
                 });
@@ -120,7 +121,9 @@ module.exports = {
                 type: detail.type,
                 minute: detail.minute,
                 isHomeTeam: detail.isHomeTeam,
-                playerId: detail.playerId
+                playerId: detail.playerId,
+                inId: detail.inId,
+                outId: detail.outId
             });
             
             const curMatch = await matchDB.findById(detail.matchId);
@@ -179,6 +182,23 @@ module.exports = {
                 message: e.message
             });
             return;
+        }
+    },
+    getMatchDetail: async function(req, res, next){
+        try {
+            const matchId = req.query.matchId;
+            if (matchId === undefined){
+                res.status(400).json({
+                    message: "Match ID is undefinded"
+                });
+                return;
+            }
+            const list = await matchDetailDB.find({matchId: matchId}).sort({minute: 1});
+            res.status(200).json(list);
+        } catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
         }
     }
 }
