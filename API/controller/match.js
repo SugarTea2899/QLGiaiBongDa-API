@@ -200,5 +200,24 @@ module.exports = {
                 message: e.message
             });
         }
+    },
+    getConfrontationHistory: async function(req, res, next){
+        try {
+            const teamA = req.query.teamA;
+            const teamB = req.query.teamB;
+            let arrFilter = [];
+            arrFilter.push(teamA);
+            arrFilter.push(teamB);
+
+            const list = await matchDB.find({
+                homeTeam: {$in: arrFilter},
+                guestTeam: {$in: arrFilter}
+            });
+            res.status(200).json(list);
+        } catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
+        }
     }
 }

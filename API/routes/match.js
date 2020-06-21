@@ -33,4 +33,11 @@ router.post('/add-detail', async function(req, res, next){
 router.get('/detail', async function(req, res, next){
     matchController.getMatchDetail(req, res, next);
 })
+
+/* get confrontation history between two teams */
+router.get('/confrontation-history', async function(req, res, next){
+    matchController.getConfrontationHistory(req, res, next);
+});
+
+
 module.exports = router;
