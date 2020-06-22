@@ -22,4 +22,8 @@ router.get('/search', async function(req, res, next){
     teamController.search(req, res, next);
 });
 
+/*get info of a team*/
+router.get('/getInfo', async function(req, res, next){
+    teamController.getInfo(req, res, next);
+});
 module.exports = router;

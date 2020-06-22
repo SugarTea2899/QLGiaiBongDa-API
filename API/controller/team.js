@@ -4,24 +4,31 @@ module.exports = {
     add: async function(req, res, next){
         try{
             const teamInfo = req.body;
-
-            const existTeam = await teamDB.findOne({name: teamInfo.name});
-
-            if (existTeam !== null){
+            const existTeamName = await teamDB.findOne({name: teamInfo.name});
+            const existshortName = await teamDB.findOne({shortName: teamInfo.shortName});
+            if (existTeamName !== null){
                 res.status(404).json({
-                    message: "Team's number is existed."
+                    message: "Team's name exists."
+                });
+                return;
+            }
+
+            if (existshortName !== null){
+                res.status(404).json({
+                    message: "Team's short name exists."
                 });
                 return;
             }
 
             const newTeam = new teamDB({
               name: teamInfo.name,
+              shortName: teamInfo.shortName,
               stadium: teamInfo.stadium,
               sponsor: teamInfo.sponsor,
               captainId: teamInfo.captainId,
               coachId: teamInfo.coachId,
               currentRanking: 0,
-              logo: String
+              logo: teamInfo.logo
             });
 
             await newTeam.save();
@@ -40,7 +47,7 @@ module.exports = {
             const teamId = req.body.teamId;
             if (teamId === undefined){
                 res.status(404).json({
-                    message: "Team ID is undefined."
+                    message: "teamID is undefined."
                 });
                 return;
             }

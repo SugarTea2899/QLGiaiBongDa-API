@@ -4,12 +4,13 @@ mongoose.connect(process.env.URI, { useUnifiedTopology: true, useNewUrlParser: t
 
 const teamSchema = new mongoose.Schema({
     name: String,
+    shortName: String,
     stadium: String,
     sponsor: String,
     captainId: String,
     coachId: String,
     currentRanking: Number,
-    logo: String  
+    logo: String
 }, {collection: 'teams'});
 
 module.exports = mongoose.model('teams', teamSchema);
