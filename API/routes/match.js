@@ -39,5 +39,9 @@ router.get('/confrontation-history', async function(req, res, next){
     matchController.getConfrontationHistory(req, res, next);
 });
 
+/* get confrontation history between two teams */
+router.get('/history', async function(req, res, next){
+    matchController.getHistory(req, res, next);
+});
 
 module.exports = router;

@@ -235,7 +235,29 @@ module.exports = {
 
             const list = await matchDB.find({
                 homeTeam: {$in: arrFilter},
-                guestTeam: {$in: arrFilter}
+                guestTeam: {$in: arrFilter},
+                stateMatch: 2
+            });
+            res.status(200).json(list);
+        } catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
+        }
+    },
+    getHistory: async function(req, res, next){
+        try {
+            const team = req.query.team;
+            const stateMatch = req.query.stateMatch;
+            if (team === undefined || stateMatch === undefined){
+                res.status(400).json({
+                    message: "team or statMatch is not found"
+                });
+                return;
+            }
+            const list = await matchDB.find({
+                $or:[{homeTeam: team},{guestTeam: team}],
+                stateMatch: stateMatch
             });
             res.status(200).json(list);
         } catch (e) {
