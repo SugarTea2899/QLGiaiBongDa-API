@@ -29,7 +29,8 @@ module.exports = {
                 homeYellowCard: matchInfo.homeYellowCard,
                 guestYellowCard: matchInfo.guestYellowCard,
                 homeRedCard: matchInfo.homeRedCard,
-                guestRedCard: matchInfo.guestRedCard
+                guestRedCard: matchInfo.guestRedCard,
+                stateMatch: matchInfo.stateMatch
             });
 
             await newMatch.save();
@@ -84,6 +85,29 @@ module.exports = {
             await match.save();
             res.status(200).json({
                 message: "updating match is successful"
+            });
+        } catch(e) {
+            res.status(404).json({
+                message: "match id is not found"
+            });
+        }
+    },
+
+    updateStateMatch: async function(req, res, next) {
+        try {
+            const id = req.body.matchId;
+            if (id === undefined) {
+                res.status(404).json({
+                    message: "match id is undefined"
+                });
+                return;
+            }
+            const match = await matchDB.findById(id);
+            const state = req.body.stateMatch;
+            match.stateMatch = state;
+            await match.save();
+            res.status(200).json({
+                message: "updating state match is successful"
             });
         } catch(e) {
             res.status(404).json({

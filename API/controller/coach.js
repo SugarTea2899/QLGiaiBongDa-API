@@ -1,5 +1,7 @@
 const coachDB = require('../models/coach');
 const { remove } = require('../models/coach');
+const upload = require('../config/uploader');
+const fs = require('fs');
 
 module.exports = {
     add: async function(req, res, next) {
@@ -110,6 +112,43 @@ module.exports = {
             const coach = await coachDB.findById(coachId);
             res.status(200).json(coach);
         } catch(e) {
+            res.status(404).json({
+                message: "coach id is not found"
+            });
+        }
+    },
+
+    uploadAvatar: async function(req, res, next) {
+        if (req.file === undefined) {
+            res.status(404).json({
+                message: "upload avatar failed"
+            });
+            return;
+        }
+
+        try {
+            const id = req.query.id;
+            const coach = await coachDB.findById(id);
+            if (coach.avatar !== null && coach.avatar != `images/${req.file.filename}`){
+                fs.unlink(`./public/${coach.avatar}`, (err) => {
+                    if (err) {
+                        next(err);
+                    };
+                });
+            }
+
+            coach.avatar = `images/${req.file.filename}`;
+            await coach.save();
+            res.status(200).json({
+                message: "upload avatar successful"
+            });
+        } catch(e) {
+            fs.unlink(`./public/images/${req.file.filename}`, (err) => {
+                if (err) {
+                    next(err);
+                }
+            });
+
             res.status(404).json({
                 message: "coach id is not found"
             });

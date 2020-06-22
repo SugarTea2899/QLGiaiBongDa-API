@@ -5,7 +5,8 @@ mongoose.connect(process.env.URI, {useUnifiedTopology: true, useNewUrlParser: tr
 const coachSchema = new mongoose.Schema({
     name: String,
     dob: Date,
-    nationality: String
+    nationality: String,
+    avatar: String
 }, {collection: 'coaches'});
 
 module.exports = mongoose.model('coaches', coachSchema);

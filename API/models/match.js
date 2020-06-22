@@ -14,7 +14,8 @@ const matchSchema = new mongoose.Schema({
     homeYellowCard: Number,
     guestYellowCard: Number,
     homeRedCard: Number,
-    guestRedCard: Number
+    guestRedCard: Number,
+    stateMatch: Number
 }, {collection: 'matches'});
 
 module.exports = mongoose.model('matches', matchSchema);
