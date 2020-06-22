@@ -75,6 +75,24 @@ module.exports = {
             });
         }
     },
+    getInfo: async function(req, res, next){
+        try{
+            const teamId = req.query.teamId;
+            if (teamId === undefined){
+                res.status(404).json({
+                    message: "teamID is undefined"
+                });
+                return;
+            }
+            const team = await teamDB.findById(teamId);
+            res.status(200).json(team);
+        }catch(e){
+            res.status(404).json({
+                message: "Team ID is not found"
+            });
+            return;
+        }
+    },
     update: async function(req, res, next){
         try{
             const id = req.body.teamId;
