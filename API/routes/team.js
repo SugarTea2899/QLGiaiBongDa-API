@@ -26,4 +26,9 @@ router.get('/search', async function(req, res, next){
 router.get('/getInfo', async function(req, res, next){
     teamController.getInfo(req, res, next);
 });
+
+/**/
+router.post('/uploadLogo', async function(req, res, next){
+    teamController.uploadLogo(req, res, next);
+});
 module.exports = router;

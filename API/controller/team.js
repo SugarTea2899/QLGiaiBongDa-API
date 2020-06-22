@@ -93,6 +93,40 @@ module.exports = {
             return;
         }
     },
+    uploadLogo: async function(req, res, next){
+        if (req.file === undefined){
+            res.status(404).json({
+                message: "Upload logo failed"
+            });
+            return;
+        }
+        try {
+            const id = req.query.id;
+            const team = await playerDB.findById(team);
+
+            if (team.logo !== null && team.logo != `images/${req.file.filename}`){
+                fs.unlink(`./public/${team.logo}`, (err) => {
+                    if (err)
+                        next(err);
+                });
+            }
+
+            team.logo = `images/${req.file.filename}`;
+            await team.save();
+            res.status(200).json({
+                message: "Logo uploaded successfully"
+            });
+        }catch(e){
+            fs.unlink(`./public/images/${req.file.filename}`, (err) =>{
+                if (err)
+                    next(err);
+            });
+
+            res.status(404).json({
+                message: "teamID is not found"
+            });
+        }
+    },
     update: async function(req, res, next){
         try{
             const id = req.body.teamId;
