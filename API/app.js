@@ -9,6 +9,7 @@ var playerRouter = require('./routes/player');
 var refereeRouter = require('./routes/referee');
 var coachRouter = require('./routes/coach');
 var regulationRouter = require('./routes/regulation');
+var teamRouter = require('./routes/team');
 var app = express();
 
 // view engine setup
@@ -26,6 +27,7 @@ app.use('/player', playerRouter);
 app.use('/referee', refereeRouter);
 app.use('/coach', coachRouter);
 app.use('/regulation', regulationRouter);
+app.use('/team',teamRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
