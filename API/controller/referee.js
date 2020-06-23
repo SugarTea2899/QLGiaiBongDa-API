@@ -1,4 +1,6 @@
 const refereeDB = require('../models/referee');
+const upload = require('../config/uploader');
+const fs = require('fs');
 
 module.exports = {
     add: async function(req, res, next) {
@@ -17,7 +19,8 @@ module.exports = {
             const newReferee = new refereeDB({
                 name: refereeInfo.name,
                 dob: refereeInfo.dob,
-                nationality: refereeInfo.nationality
+                nationality: refereeInfo.nationality,
+                avatar: refereeInfo.avatar
             });
 
             await newReferee.save();
@@ -111,6 +114,41 @@ module.exports = {
         } catch(e) {
             res.status(404).json({
                 message: "referee id is not found"
+            });
+        }
+    },
+
+    uploadAvatar: async function(req, res, next){
+        if (req.file === undefined){
+            res.status(404).json({
+                message: "upload avatar failed"
+            });
+            return;
+        }
+        try{
+            const id = req.query.id;
+            const referee = await refereeDB.findById(id);
+
+            if (referee.avatar !== null && referee.avatar != `images/${req.file.filename}`){
+                fs.unlink(`./public/${referee.avatar}`, (err) => {
+                    if (err)
+                        next(err);
+                });
+            }
+
+            referee.avatar = `images/${req.file.filename}`;
+            await referee.save();
+            res.status(200).json({
+                message: "upload avatar successful"
+            });
+        }catch(e){
+            fs.unlink(`./public/images/${req.file.filename}`, (err) =>{
+                if (err)
+                    next(err);
+            });
+
+            res.status(404).json({
+                message: "Player ID is not found"
             });
         }
     }

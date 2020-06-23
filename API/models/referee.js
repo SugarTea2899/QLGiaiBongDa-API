@@ -5,7 +5,8 @@ mongoose.connect(process.env.URI, {useUnifiedTopology: true, useNewUrlParser: tr
 const refereeSchema = new mongoose.Schema({
     name: String,
     dob: Date,
-    nationality: String
+    nationality: String,
+    avatar: String
 }, {collection: 'referees'});
 
 module.exports = mongoose.model('referees', refereeSchema);
