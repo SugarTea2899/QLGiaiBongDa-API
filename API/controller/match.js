@@ -105,6 +105,12 @@ module.exports = {
             const match = await matchDB.findById(id);
             const state = req.body.stateMatch;
             match.stateMatch = state;
+            if (state == "2"){
+                if (match.homeGoal > match.guestGoal){
+                    const conceded = match.homeGoal - match.guestGoal;
+                    const regulation
+                }
+            }
             await match.save();
             res.status(200).json({
                 message: "updating state match is successful"
