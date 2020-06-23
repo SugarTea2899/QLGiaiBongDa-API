@@ -20,7 +20,8 @@ module.exports = {
             const newCoach = new coachDB({
                 name: coachInfo.name,
                 dob: coachInfo.dob,
-                nationality: coachInfo.nationality
+                nationality: coachInfo.nationality,
+                avatar: coachInfo.avatar
             });
 
             await newCoach.save();
