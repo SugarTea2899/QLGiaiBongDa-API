@@ -1,8 +1,8 @@
 const matchDB = require('../models/match');
 const matchDetailDB = require('../models/matchDetail');
 const playerDB = require('../models/player');
-const match = require('../models/match');
-
+const regualationDB = require('../models/regulation');
+const rankDB = require('../models/rank');
 module.exports = {
     add: async function(req, res, next) {
         try {
@@ -105,12 +105,74 @@ module.exports = {
             const match = await matchDB.findById(id);
             const state = req.body.stateMatch;
             match.stateMatch = state;
-            if (state == "2"){
+            //update point
+            if (state == 2){
+                const regulation = await regualationDB.findOne();
+                const date = new Date(match.dateStart);
                 if (match.homeGoal > match.guestGoal){
-                    const conceded = match.homeGoal - match.guestGoal;
-                    const regulation
+                    const wTeam =  await rankDB.findOne({
+                        team: match.homeTeam,
+                        season: date.getFullYear()
+                    });
+                    const lTeam = await rankDB.findOne({
+                        team: match.guestTeam,
+                        season: date.getFullYear()
+                    });
+                    wTeam.point += regulation.winPoint;
+                    wTeam.goal += match.homeGoal;
+                    wTeam.conceded += match.guestGoal;
+                    wTeam.win++;
+                    
+                    lTeam.goal += match.guestGoal;
+                    lTeam.conceded += match.homeGoal;
+                    lTeam.loss++;
+
+                    await lTeam.save();
+                    await wTeam.save();
+                }else{
+                    if (match.homeGoal < match.guestGoal){
+                        const wTeam =  await rankDB.findOne({
+                            team: match.guestTeam,
+                            season: date.getFullYear()
+                        });
+                        const lTeam = await rankDB.findOne({
+                            team: match.homeTeam,
+                            season: date.getFullYear()
+                        });
+                        wTeam.point += regulation.winPoint;
+                        wTeam.goal += match.guestGoal;
+                        wTeam.conceded += match.homeGoal;
+                        wTeam.win++;
+                        
+                        lTeam.goal += match.homeGoal;
+                        lTeam.conceded += match.guestGoal;
+                        lTeam.loss++;
+                        await lTeam.save();
+                        await wTeam.save();
+                    }else{ //draw match
+                        const gTeam =  await rankDB.findOne({
+                            team: match.guestTeam,
+                            season: date.getFullYear()
+                        });
+                        const hTeam = await rankDB.findOne({
+                            team: match.homeTeam,
+                            season: date.getFullYear()
+                        });
+                        gTeam.point += regulation.drawPoint;
+                        gTeam.goal += match.guestGoal;
+                        gTeam.conceded += match.homeGoal;
+                        gTeam.draw++;
+
+                        hTeam.point += regulation.drawPoint;
+                        hTeam.goal += match.homeGoal;
+                        hTeam.conceded += match.guestGoal;
+                        hTeam.draw++;
+                        await gTeam.save();
+                        await hTeam.save();
+                    }
                 }
             }
+            //----
             await match.save();
             res.status(200).json({
                 message: "updating state match is successful"

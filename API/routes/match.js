@@ -44,4 +44,8 @@ router.get('/history', async function(req, res, next){
     matchController.getHistory(req, res, next);
 });
 
+/* update match state */
+router.post('/update-state', async function(req, res, next){
+    matchController.updateStateMatch(req, res, next);
+});
 module.exports = router;
