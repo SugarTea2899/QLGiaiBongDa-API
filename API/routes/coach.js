@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const coachController = require('../controller/coach');
+const upload = require('../config/uploader');
 
 /* add coach */
 router.post('/add', async function(req, res, next){
@@ -25,6 +26,11 @@ router.get('/search', async function(req, res, next){
 /* get coach's info */
 router.get('/info', async function(req, res, next){
     coachController.getInfo(req, res, next);
+});
+
+/* upload coach avatar */
+router.post('/upload-avatar', upload.single('avatar'), function(req, res, next){
+    coachController.uploadAvatar(req, res, next);
 });
 
 module.exports = router;
