@@ -120,20 +120,20 @@ module.exports = {
     },
 
     uploadAvatar: async function(req, res, next){
-        if (req.file === undefined){
+        if (req.file === undefined) {
             res.status(404).json({
                 message: "upload avatar failed"
             });
             return;
         }
-        try{
+        try {
             const id = req.query.id;
             const coach = await coachDB.findById(id);
-
             if (coach.avatar !== null && coach.avatar != `images/${req.file.filename}`){
                 fs.unlink(`./public/${coach.avatar}`, (err) => {
-                    if (err)
+                    if (err) {
                         next(err);
+                    };
                 });
             }
 
@@ -151,6 +151,6 @@ module.exports = {
             res.status(404).json({
                 message: "Coach ID is not found"
             });
-        }
+        } 
     }
 }

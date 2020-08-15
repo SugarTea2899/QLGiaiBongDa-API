@@ -28,7 +28,6 @@ router.get('/info', async function(req, res, next){
     coachController.getInfo(req, res, next);
 });
 
-/* upload coach avatar */
 router.post('/upload-avatar', upload.single('avatar'), function(req, res, next){
     coachController.uploadAvatar(req, res, next);
 });
