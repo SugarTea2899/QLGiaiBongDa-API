@@ -39,4 +39,24 @@ router.post('/upload-avatar', upload.single('avatar'), function(req, res, next){
     playerController.uploadAvatar(req, res, next);
 });
 
+/* get list player in a team */
+router.get('/teammate', async function(req, res, next){
+    playerController.getListPlayer(req, res, next);
+});
+
+/* get list top goal */
+router.get('/top-goal', async function(req, res, next){
+    playerController.getListTopGoal(req, res, next);
+});
+
+/* get list top clean sheet */
+router.get('/top-clean-sheet', async function(req, res, next){
+    playerController.getListTopCleanSheet(req, res, next);
+});
+
+/* get top assistance list */
+router.get('/top-assistance', async function(req, res, next){
+    playerController.getTopAssistance(req, res, next);
+});
+
 module.exports = router;

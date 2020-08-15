@@ -166,5 +166,100 @@ module.exports = {
                 message: "Player ID is not found"
             });
         }
+    },
+    getListPlayer: async function(req, res, next){
+        try {
+            const teamId = req.query.teamId;
+            if (teamId === undefined || teamId === null){
+                res.status(404).json({
+                    message: "Team ID is undefine"
+                });
+                return;
+            }
+            const list = await playerDB.find({teamId: teamId});
+            res.status(200).json(list);
+        } catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
+        }
+    },
+    getListTopGoal: async function(req, res, next){
+        try {
+            const list = await playerDB.find().sort({totalGoal: -1});
+            const ans = [];
+            
+            if (list.length == 0){
+                res.status(200).json(ans);
+                return;
+            }
+    
+            const max = list[0].totalGoal;
+
+            for (i = 0; i < list.length; i++){
+                if (list[i].totalGoal == max){
+                    ans.push(list[i]);
+                }else{
+                    break;
+                }
+            }
+            res.status(200).json(ans); 
+        } catch (e) {
+            res.status(400).json({
+                message: e.message
+            });
+        }
+    },
+    getListTopCleanSheet: async function(req, res, next){
+        try {
+            const list =  await playerDB.find().sort({totalCleanSheet: -1});
+            const ans = [];
+
+            if (list.length == 0){
+                res.status(200).json(ans);
+                return;
+            }
+    
+            const max = list[0].totalCleanSheet;
+
+            for (i = 0; i < list.length; i++){
+                if (list[i].totalCleanSheet == max){
+                    ans.push(list[i]);
+                }else{
+                    break;
+                }
+            }
+            res.status(200).json(ans); 
+        } catch (e) {
+            res.status(400).json({
+                message: e.message
+            });
+        }
+    },
+    getTopAssistance: async function(req, res, next){
+        try {
+            const list =  await playerDB.find().sort({totalAssist: -1});
+            const ans = [];
+
+            if (list.length == 0){
+                res.status(200).json(ans);
+                return;
+            }
+    
+            const max = list[0].totalAssist;
+
+            for (i = 0; i < list.length; i++){
+                if (list[i].totalAssist == max){
+                    ans.push(list[i]);
+                }else{
+                    break;
+                }
+            }
+            res.status(200).json(ans); 
+        } catch (e) {
+            res.status(400).json({
+                message: e.message
+            });
+        }       
     }
 }
