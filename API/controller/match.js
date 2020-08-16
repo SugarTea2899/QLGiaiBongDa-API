@@ -323,6 +323,11 @@ module.exports = {
                 });
                 return;
             }
+            if (stateMatch == 3){
+                const list = await matchDB.find();
+                res.status(200).json(list);
+                return;
+            }
             const list = await matchDB.find({
                 $or:[{homeTeam: team},{guestTeam: team}],
                 stateMatch: stateMatch
@@ -332,6 +337,25 @@ module.exports = {
             res.status(404).json({
                 message: e.message
             });
+        }
+    }, 
+    getMatchInfo: async function (req, res, next){
+        try{
+            const id = req.query.matchId;
+            if (id === undefined){
+                res.status(404).json({
+                    message: "Match Id not found"
+                });
+                return;
+            }
+
+            const match = await matchDB.findById(id);
+            res.status(200).json(match);
+        }catch(e){
+            res.status(404).json({
+                message: e.massage
+            });
+            return;
         }
     }
 }

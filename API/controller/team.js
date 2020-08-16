@@ -153,5 +153,15 @@ module.exports = {
                 message: "Team not found"
             });
         }
+    },
+    getTeamList: async function(req, res, next){
+        try{
+            const team = await teamDB.find();
+            res.status(200).json(team);
+        }catch(e){
+            res.status(404).json({
+                message: e.message
+            })
+        }
     }
 }

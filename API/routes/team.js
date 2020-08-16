@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const teamController = require('../controller/team');
+const team = require('../models/team');
 
 /* add team*/
 router.post('/add', async function(req, res, next){
@@ -31,4 +32,10 @@ router.get('/getInfo', async function(req, res, next){
 router.post('/uploadLogo', async function(req, res, next){
     teamController.uploadLogo(req, res, next);
 });
+
+/* get team list*/
+router.get('/list', async function(req, res, next){
+    teamController.getTeamList(req, res, next);
+});
+
 module.exports = router;
