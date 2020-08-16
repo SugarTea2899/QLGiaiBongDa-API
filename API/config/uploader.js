@@ -8,20 +8,8 @@ const storage = multer.diskStorage({
     }
 });
 
-const fileFilter = (req, file, cb) => {
-    if (req.query.id === undefined){
-        cb(null, false);
-        return;
-    }
-    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
-        cb(null, true);
-    }else{
-        cb(null, false);
-    }
-}
 const upload = multer({
     storage: storage,
-    fileFilter: fileFilter,
     limits: {
         fileSize: 500000
     }

@@ -23,7 +23,7 @@ module.exports = {
                 type: playerInfo.type,
                 nationality: playerInfo.nationality,
                 teamId: playerInfo.teamId,
-                avatar: playerInfo.avatar,
+                avatar: null,
                 number: playerInfo.number,
                 totalRedCard: 0,
                 totalYellowCard: 0,
