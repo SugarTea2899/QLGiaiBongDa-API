@@ -285,7 +285,18 @@ module.exports = {
                 });
                 return;
             }
-            const list = await matchDetailDB.find({matchId: matchId}).sort({minute: 1});
+            let list = await matchDetailDB.find({matchId: matchId}).sort({minute: 1}).lean();
+            for (i = 0; i < list.length; i++){
+                if (list[i].type != 6){
+                    const player = await playerDB.findById(list[i].playerId);
+                    list[i].playerIn = player;
+                }else{
+                    const playerIn = await playerDB.findById(list[i].inId);
+                    const playerOut = await playerDB.findById(list[i].outId);
+                    list[i].playerIn = playerIn;
+                    list[i].playerOut = playerOut;
+                }
+            }
             res.status(200).json(list);
         } catch (e) {
             res.status(404).json({
