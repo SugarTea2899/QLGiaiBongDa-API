@@ -187,12 +187,12 @@ module.exports = {
 
     search: async function(req, res, next) {
         try {
-            let val = req.query.teamId;
+            let val = req.query.name;
             if (val === undefined) {
                 val = "";
             }
 
-            const list = await matchDB.find({$or:[{homeTeam: val},{guestTeam: val}]});
+            const list = await matchDB.find({$or:[{homeTeam: {"$regex": val, "$options": "i"}},{guestTeam: {"$regex": val, "$options": "i"}}]});
             res.status(200).json(list);
         } catch(e) {
             res.status(404).json({
