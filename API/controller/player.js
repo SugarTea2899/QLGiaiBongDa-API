@@ -85,6 +85,7 @@ module.exports = {
 
             await player.save();
             res.status(200).json({
+                playerId: player._id,
                 message: "updating player is successful"
             });
         }catch(e){
