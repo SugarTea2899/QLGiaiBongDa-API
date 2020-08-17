@@ -52,5 +52,14 @@ router.post('/update-state', async function(req, res, next){
 /* get match info */
 router.get('/get-match-info', async function(req, res, next){
     matchController.getMatchInfo(req, res, next);
-})
+});
+
+router.get('/recent-round', async function(req, res, next){
+    matchController.getRecentRound(req, res, next);
+});
+
+router.get('/recent-match', async function(req, res, next){
+    matchController.getRecentMatch(req, res, next);
+});
+
 module.exports = router;

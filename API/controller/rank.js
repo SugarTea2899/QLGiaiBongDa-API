@@ -29,13 +29,13 @@ module.exports = {
         } catch (e) {
             res.status(404).json({
                 message: e.message
-            }); 
+            });
         }
     },
     getCurRank: async function(req, res, next){
         try {
             const season = req.query.season;
-            const list = await rank.find({season: season});
+            const list = await rank.find({season: season}).sort('-point');
             res.status(200).json(list);
         } catch (e) {
             res.status(404).json({

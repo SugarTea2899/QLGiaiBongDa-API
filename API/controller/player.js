@@ -1,4 +1,6 @@
 const playerDB = require('../models/player');
+const teamDB = require('../models/team');
+const matchDB = require('../models/match');
 const upload = require('../config/uploader');
 const fs = require('fs');
 
@@ -54,23 +56,11 @@ module.exports = {
                 });
                 return;
             }
-            const player = playerDB.findById(playerId);
-            if (player.avatar !== null && player.avatar.length > 0){
-                fs.unlink(`./public/${player.avatar}`, (err) =>{
-                    if (err){
-                        res.status(404).json({
-                            message: "remove fail"
-                        });
-                        return;
-                    }
-                });
-            }
             await playerDB.findOneAndDelete({_id: playerId});
             res.status(200).json({
                 message: "removing player is successful"
             });
         }catch(e){
-            console.log(e.message);
             res.status(404).json({
                 message: "player ID is not found"
             });
@@ -86,12 +76,6 @@ module.exports = {
                 return;
             }
             const player = await playerDB.findById(id); //catch below
-            if (player === null){
-                res.status(404).json({
-                    message: "player ID is not found"
-                });
-                return;
-            }
 
             for (member in req.body){
                 if (member != "playerId"){
@@ -101,7 +85,6 @@ module.exports = {
 
             await player.save();
             res.status(200).json({
-                playerId: player._id,
                 message: "updating player is successful"
             });
         }catch(e){
@@ -144,12 +127,6 @@ module.exports = {
                 return;
             }
             const player = await playerDB.findById(playerId);
-            if (player === null){
-                res.status(404).json({
-                    message: "Player ID is not found"
-                });
-                return;
-            }
             res.status(200).json(player);
         }catch(e){
             res.status(404).json({
@@ -169,14 +146,10 @@ module.exports = {
             const id = req.query.id;
             const player = await playerDB.findById(id);
 
-            if (player.avatar !== null && player.avatar.length > 0 && player.avatar != `images/${req.file.filename}`){
+            if (player.avatar !== null && player.avatar != `images/${req.file.filename}`){
                 fs.unlink(`./public/${player.avatar}`, (err) => {
-                    if (err){
-                        res.status(404).json({
-                            message: "upload avatar failed"
-                        });
-                        return;
-                    }
+                    if (err)
+                        next(err);
                 });
             }
 
@@ -192,7 +165,7 @@ module.exports = {
             });
 
             res.status(404).json({
-                message: e.message
+                message: "Player ID is not found"
             });
         }
     },
@@ -211,6 +184,31 @@ module.exports = {
             res.status(404).json({
                 message: e.message
             });
+        }
+    },
+    getListPlayerByTeamName: async function(req, res, next) {
+        try {
+            const matchId = req.query.matchId;
+            if (matchId === undefined || matchId == null) {
+                res.status(404).json({
+                    message: "MatchId is undefined"
+                });
+                return;
+            }
+            const matchInfo = await matchDB.findById(matchId).lean();
+            const homeTeamInfo = await teamDB.findOne({name: matchInfo.homeTeam}).lean();
+            const guestTeamInfo = await teamDB.findOne({name: matchInfo.guestTeam}).lean();
+
+            const listHome = await playerDB.find({teamId: homeTeamInfo._id}).lean();
+            const listGuest = await playerDB.find({teamId: guestTeamInfo._id}).lean();
+            res.status(200).json({
+                listHome: listHome,
+                listGuest: listGuest
+            });
+        } catch(e) {
+            res.status(404).json({
+                message: e.message
+            })
         }
     },
     getListTopGoal: async function(req, res, next){
@@ -290,5 +288,22 @@ module.exports = {
                 message: e.message
             });
         }       
+    },
+    getAllPlayer: async function(req, res, next) {
+        try {
+            const list = await playerDB.find().lean();
+            for (i = 0; i < list.length; i++) {
+                const teamInfo = await teamDB.findById(list[i].teamId);
+                if (teamInfo !== null) {
+                    list[i].logoTeam = teamInfo.logo;
+                    list[i].nameTeam = teamInfo.name;
+                }
+            }
+            res.status(200).json(list);
+        } catch(e) {
+            res.status(400).json({
+                message: e.message
+            });
+        }
     }
 }

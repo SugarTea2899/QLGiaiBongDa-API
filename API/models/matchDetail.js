@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const player = require('./player');
 
 mongoose.connect(process.env.URI, {useUnifiedTopology: true, useNewUrlParser: true});
 

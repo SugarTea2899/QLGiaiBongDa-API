@@ -1,6 +1,7 @@
 const matchDB = require('../models/match');
 const matchDetailDB = require('../models/matchDetail');
 const playerDB = require('../models/player');
+const teamDB = require('../models/team');
 const regualationDB = require('../models/regulation');
 const rankDB = require('../models/rank');
 module.exports = {
@@ -123,7 +124,7 @@ module.exports = {
                     wTeam.goal += match.homeGoal;
                     wTeam.conceded += match.guestGoal;
                     wTeam.win++;
-                    
+
                     lTeam.goal += match.guestGoal;
                     lTeam.conceded += match.homeGoal;
                     lTeam.loss++;
@@ -144,7 +145,7 @@ module.exports = {
                         wTeam.goal += match.guestGoal;
                         wTeam.conceded += match.homeGoal;
                         wTeam.win++;
-                        
+
                         lTeam.goal += match.homeGoal;
                         lTeam.conceded += match.guestGoal;
                         lTeam.loss++;
@@ -187,12 +188,12 @@ module.exports = {
 
     search: async function(req, res, next) {
         try {
-            let val = req.query.teamId;
+            let val = req.query.name;
             if (val === undefined) {
                 val = "";
             }
 
-            const list = await matchDB.find({$or:[{homeTeam: val},{guestTeam: val}]});
+            const list = await matchDB.find({$or:[{homeTeam: {"$regex": val, "$options": "i"}},{guestTeam: {"$regex": val, "$options": "i"}}]});
             res.status(200).json(list);
         } catch(e) {
             res.status(404).json({
@@ -218,7 +219,7 @@ module.exports = {
                 inId: detail.inId,
                 outId: detail.outId
             });
-            
+
             const curMatch = await matchDB.findById(detail.matchId);
             switch (detail.type){
                 case 0: case 1:
@@ -245,9 +246,9 @@ module.exports = {
                     else
                         curMatch.guestRedCard++;
                     break;
-                
+
             }
-            
+
             const player = await playerDB.findById(detail.playerId);
             switch (detail.type){
                 case 0: case 1:
@@ -350,7 +351,7 @@ module.exports = {
                 message: e.message
             });
         }
-    }, 
+    },
     getMatchInfo: async function (req, res, next){
         try{
             const id = req.query.matchId;
@@ -361,13 +362,48 @@ module.exports = {
                 return;
             }
 
-            const match = await matchDB.findById(id);
+            let match = await matchDB.findById(id).lean();
+            const homeInfo = await teamDB.findOne({name: match.homeTeam});
+            match.logoHome = homeInfo.logo;
+            const guestInfo = await teamDB.findOne({name: match.guestTeam});
+            match.logoGuest = guestInfo.logo;
             res.status(200).json(match);
         }catch(e){
             res.status(404).json({
-                message: e.massage
+                message: e.message
             });
             return;
+        }
+    },
+    getRecentRound: async function(req, res, next){
+        try {
+            const maxRound = await matchDB.findOne().sort('-round').exec();
+
+            res.status(200).json(maxRound);
+
+
+        }
+        catch(e) {
+            res.status(404).json({
+                message: e.message
+            })
+        }
+    },
+    getRecentMatch: async function(req, res, next){
+        try {
+            let round = req.query.round;
+            if (round === undefined) {
+                res.status(404).json({
+                    message: "Round number is undefined"
+                });
+            }
+            const list = await matchDB.find({round: round});
+            res.status(200).json(list);
+        }
+        catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
         }
     }
 }
