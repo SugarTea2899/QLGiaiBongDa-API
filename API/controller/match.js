@@ -122,7 +122,7 @@ module.exports = {
                     wTeam.goal += match.homeGoal;
                     wTeam.conceded += match.guestGoal;
                     wTeam.win++;
-                    
+
                     lTeam.goal += match.guestGoal;
                     lTeam.conceded += match.homeGoal;
                     lTeam.loss++;
@@ -143,7 +143,7 @@ module.exports = {
                         wTeam.goal += match.guestGoal;
                         wTeam.conceded += match.homeGoal;
                         wTeam.win++;
-                        
+
                         lTeam.goal += match.homeGoal;
                         lTeam.conceded += match.guestGoal;
                         lTeam.loss++;
@@ -217,7 +217,7 @@ module.exports = {
                 inId: detail.inId,
                 outId: detail.outId
             });
-            
+
             const curMatch = await matchDB.findById(detail.matchId);
             switch (detail.type){
                 case 0: case 1:
@@ -244,9 +244,9 @@ module.exports = {
                     else
                         curMatch.guestRedCard++;
                     break;
-                
+
             }
-            
+
             const player = await playerDB.findById(detail.playerId);
             switch (detail.type){
                 case 0: case 1:
@@ -349,7 +349,7 @@ module.exports = {
                 message: e.message
             });
         }
-    }, 
+    },
     getMatchInfo: async function (req, res, next){
         try{
             const id = req.query.matchId;
@@ -367,6 +367,37 @@ module.exports = {
                 message: e.massage
             });
             return;
+        }
+    },
+    getRecentRound: async function(req, res, next){
+        try {
+            const maxRound = await matchDB.findOne().sort('-round').exec();
+
+            res.status(200).json(maxRound);
+
+
+        }
+        catch(e) {
+            res.status(404).json({
+                message: e.message
+            })
+        }
+    },
+    getRecentMatch: async function(req, res, next){
+        try {
+            let round = req.query.round;
+            if (round === undefined) {
+                res.status(404).json({
+                    message: "Round number is undefined"
+                });
+            }
+            const list = await matchDB.find({round: round});
+            res.status(200).json(list);
+        }
+        catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
         }
     }
 }
