@@ -29,8 +29,13 @@ router.get('/info', async function(req, res, next){
 });
 
 /* upload referee avatar */
-router.post('/upload-avatar', upload.single('avatar'), function(req, res, next){
+router.post('/upload-avatar', upload.single('avatar'), async function(req, res, next){
     refereeController.uploadAvatar(req, res, next);
 });
+
+/* get referee list */
+router.get('/list', async function(req, res, next){
+    refereeController.getList(req, res, next);
+})
 
 module.exports = router;

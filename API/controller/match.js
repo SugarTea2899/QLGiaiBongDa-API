@@ -7,9 +7,10 @@ module.exports = {
     add: async function(req, res, next) {
         try {
             const matchInfo = req.body;
-            matchInfo.dateStart = new Date(matchInfo.dateStart);
+            let date = new Date();
+            date.setTime(matchInfo.dateStart);
+            matchInfo.dateStart = date;
             const existMatch = await matchDB.findOne({homeTeam: matchInfo.homeTeam, guestTeam: matchInfo.guestTeam});
-
             if (existMatch !== null) {
                 res.status(404).json({
                     message: "The match is already exist"
@@ -24,13 +25,13 @@ module.exports = {
                 stadium: matchInfo.stadium,
                 refereeId: matchInfo.refereeId,
                 round: matchInfo.round,
-                homeGoal: matchInfo.homeGoal,
-                guestGoal: matchInfo.guestGoal,
-                homeYellowCard: matchInfo.homeYellowCard,
-                guestYellowCard: matchInfo.guestYellowCard,
-                homeRedCard: matchInfo.homeRedCard,
-                guestRedCard: matchInfo.guestRedCard,
-                stateMatch: matchInfo.stateMatch
+                homeGoal: 0,
+                guestGoal: 0,
+                homeYellowCard: 0,
+                guestYellowCard: 0,
+                homeRedCard: 0,
+                guestRedCard: 0,
+                stateMatch: 0
             });
 
             await newMatch.save();

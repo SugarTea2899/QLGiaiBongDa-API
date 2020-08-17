@@ -170,5 +170,15 @@ module.exports = {
                 message: "Player ID is not found"
             });
         }
+    },
+    getList: async function(req, res, next){
+        try {
+            const list = await refereeDB.find();
+            res.status(200).json(list);
+        } catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
+        }
     }
 }

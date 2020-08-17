@@ -50,7 +50,7 @@ router.post('/update-state', async function(req, res, next){
 });
 
 /* get match info */
-router.post('/get-match-info', async function(req, res, next){
+router.get('/get-match-info', async function(req, res, next){
     matchController.getMatchInfo(req, res, next);
 })
 module.exports = router;
