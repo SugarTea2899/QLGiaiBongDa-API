@@ -1,6 +1,7 @@
 const matchDB = require('../models/match');
 const matchDetailDB = require('../models/matchDetail');
 const playerDB = require('../models/player');
+const teamDB = require('../models/team');
 const regualationDB = require('../models/regulation');
 const rankDB = require('../models/rank');
 module.exports = {
@@ -186,12 +187,12 @@ module.exports = {
 
     search: async function(req, res, next) {
         try {
-            let val = req.query.teamId;
+            let val = req.query.name;
             if (val === undefined) {
                 val = "";
             }
 
-            const list = await matchDB.find({$or:[{homeTeam: val},{guestTeam: val}]});
+            const list = await matchDB.find({$or:[{homeTeam: {"$regex": val, "$options": "i"}},{guestTeam: {"$regex": val, "$options": "i"}}]});
             res.status(200).json(list);
         } catch(e) {
             res.status(404).json({
@@ -360,11 +361,15 @@ module.exports = {
                 return;
             }
 
-            const match = await matchDB.findById(id);
+            let match = await matchDB.findById(id).lean();
+            const homeInfo = await teamDB.findOne({name: match.homeTeam});
+            match.logoHome = homeInfo.logo;
+            const guestInfo = await teamDB.findOne({name: match.guestTeam});
+            match.logoGuest = guestInfo.logo;
             res.status(200).json(match);
         }catch(e){
             res.status(404).json({
-                message: e.massage
+                message: e.message
             });
             return;
         }

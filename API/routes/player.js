@@ -59,4 +59,14 @@ router.get('/top-assistance', async function(req, res, next){
     playerController.getTopAssistance(req, res, next);
 });
 
+/* get all player */
+router.get('/get-all-player', async function(req, res, next){
+    playerController.getAllPlayer(req, res, next);
+});
+
+/* get list player by team name */
+router.get('/get-by-team-name', async function(req, res, next){
+    playerController.getListPlayerByTeamName(req, res, next);
+});
+
 module.exports = router;
