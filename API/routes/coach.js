@@ -28,8 +28,14 @@ router.get('/info', async function(req, res, next){
     coachController.getInfo(req, res, next);
 });
 
+/* upload coach's avatar */
 router.post('/upload-avatar', upload.single('avatar'), function(req, res, next){
     coachController.uploadAvatar(req, res, next);
+});
+
+/* get coach list*/
+router.get('/list', function(req, res, next){
+    coachController.getCoachList(req, res, next);
 });
 
 module.exports = router;

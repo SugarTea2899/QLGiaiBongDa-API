@@ -43,7 +43,17 @@ module.exports = {
                 });
                 return;
             }
-
+            const referee = await refereeDB.findById(refereeID);
+            if (referee.avatar !== null && referee.length > 0){
+                fs.unlink(`./public/${referee.avatar}`, (err) => {
+                    if (err){
+                        res.status(404).json({
+                            message: "remove fail"
+                        });
+                        return;
+                    }
+                });
+            }
             await refereeDB.findOneAndDelete({_id: refereeID});
             res.status(200).json({
                 message: "Removing referee is successful"
@@ -74,6 +84,7 @@ module.exports = {
 
             await aReferee.save();
             res.status(200).json({
+                refereeID: aReferee._id,
                 message: "updating referee is successful"
             });
         } catch(e) {
@@ -129,10 +140,14 @@ module.exports = {
             const id = req.query.id;
             const referee = await refereeDB.findById(id);
 
-            if (referee.avatar !== null && referee.avatar != `images/${req.file.filename}`){
+            if (referee.avatar !== null && referee.avatar.length > 0 && referee.avatar != `images/${req.file.filename}`){
                 fs.unlink(`./public/${referee.avatar}`, (err) => {
-                    if (err)
-                        next(err);
+                    if (err){
+                        res.status(404).json({
+                            message: "upload fail"
+                        });
+                        return;
+                    }
                 });
             }
 
@@ -143,8 +158,12 @@ module.exports = {
             });
         }catch(e){
             fs.unlink(`./public/images/${req.file.filename}`, (err) =>{
-                if (err)
-                    next(err);
+                if (err){
+                    res.status(404).json({
+                        message: "upload fail"
+                    });
+                    return;
+                }
             });
 
             res.status(404).json({
