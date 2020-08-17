@@ -44,7 +44,17 @@ module.exports = {
                 });
                 return;
             }
-
+            const coach = await coachDB.findById(coachID);
+            if (coach.avatar !== null || coach.avatar.length == 0){
+                fs.unlink(`./public/${coach.avatar}`, (err) => {
+                    if (err) {
+                        res.status(404).json({
+                            message: "remove fail"
+                        });
+                        return;
+                    };
+                });
+            }
             await coachDB.findOneAndDelete({_id: coachID});
             res.status(200).json({
                 message: "Removing coach is successful"
@@ -75,6 +85,7 @@ module.exports = {
 
             await coach.save();
             res.status(200).json({
+                coachId: coach._id,
                 message: "updating coach is successful"
             });
         } catch(e) {
@@ -129,7 +140,7 @@ module.exports = {
         try {
             const id = req.query.id;
             const coach = await coachDB.findById(id);
-            if (coach.avatar !== null && coach.avatar != `images/${req.file.filename}`){
+            if (coach.avatar !== null && coach.avatar.length > 0 && coach.avatar != `images/${req.file.filename}`){
                 fs.unlink(`./public/${coach.avatar}`, (err) => {
                     if (err) {
                         next(err);
@@ -144,13 +155,27 @@ module.exports = {
             });
         }catch(e){
             fs.unlink(`./public/images/${req.file.filename}`, (err) =>{
-                if (err)
-                    next(err);
+                if (err){
+                    res.status(404).json({
+                        message: "upload fail"
+                    });
+                    return;
+                }
             });
 
             res.status(404).json({
                 message: "Coach ID is not found"
             });
         } 
+    },
+    getCoachList: async function(req, res, next){
+        try {
+            const list = await coachDB.find();
+            res.status(200).json(list);
+        } catch (e) {
+            res.status(404).json({
+                message: e.message
+            });
+        }
     }
 }

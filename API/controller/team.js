@@ -1,4 +1,5 @@
 const teamDB = require('../models/team');
+const fs = require('fs');
 
 module.exports = {
     add: async function(req, res, next){
@@ -25,14 +26,15 @@ module.exports = {
               shortName: teamInfo.shortName,
               stadium: teamInfo.stadium,
               sponsor: teamInfo.sponsor,
-              captainId: teamInfo.captainId,
-              coachId: teamInfo.coachId,
+              captainId: null,
+              coachId: null,
               currentRanking: 0,
-              logo: teamInfo.logo
+              logo: null
             });
 
             await newTeam.save();
             res.status(200).json({
+                teamId: newTeam._id,
                 message: "Success"
             });
 
@@ -50,6 +52,17 @@ module.exports = {
                     message: "teamID is undefined."
                 });
                 return;
+            }
+            const team = await teamDB.findById(teamId);
+            if (team.logo !== null && team.logo.length > 0){
+                fs.unlink(`./public/${team.logo}`, (err) =>{
+                    if (err){
+                        res.status(404).json({
+                            message: "remove fail"
+                        });
+                        return;
+                    }
+                });
             }
             await teamDB.findOneAndDelete({_id: teamId});
             res.status(200).json({
@@ -102,9 +115,9 @@ module.exports = {
         }
         try {
             const id = req.query.id;
-            const team = await playerDB.findById(team);
+            const team = await teamDB.findById(id);
 
-            if (team.logo !== null && team.logo != `images/${req.file.filename}`){
+            if (team.logo !== null && team.logo.length > 0 && team.logo != `images/${req.file.filename}`){
                 fs.unlink(`./public/${team.logo}`, (err) => {
                     if (err)
                         next(err);
@@ -118,12 +131,16 @@ module.exports = {
             });
         }catch(e){
             fs.unlink(`./public/images/${req.file.filename}`, (err) =>{
-                if (err)
-                    next(err);
+                if (err){
+                    res.status(404).json({
+                        message: "upload logo fail"
+                    });
+                    return;
+                }
             });
 
             res.status(404).json({
-                message: "teamID is not found"
+                message: e.message
             });
         }
     },
@@ -137,7 +154,7 @@ module.exports = {
                 return;
             }
             const team = await teamDB.findById(id); //catch below
-
+            
             for (key in req.body){
                 if (key != "teamId"){
                     team[key] = req.body[key];
@@ -146,6 +163,7 @@ module.exports = {
 
             await team.save();
             res.status(200).json({
+                teamId: team._id,
                 message: "Team info updated successfully"
             });
         }catch(e){
